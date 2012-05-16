@@ -126,9 +126,17 @@ $.extend(RealPerson.prototype, {
 			html += '<br>';
 		}
 		html += '</div><div class="realperson-regen">' + inst.settings.regenerate +
-			'</div></div><input type="hidden" class="realperson-hash" name="' +
-			inst.settings.hashName.replace(/\{n\}/, target.attr('name')) +
+			'</div></div>';
+	    hash_field_name = inst.settings.hashName.replace(/\{n\}/, target.attr('name'));
+        hash_field = $(target).closest('form').find('input[name="'+hash_field_name+'"]');
+	    if (hash_field.size()) {
+	        hash_field.val(this._hash(text));
+            hash_field.addClass('realperson-hash');
+	    } else {
+		html += '<input type="hidden" class="realperson-hash" name="' +
+	        hash_field_name +
 			'" value="' + this._hash(text) + '">';
+	    }
 		return html;
 	},
 
@@ -177,7 +185,7 @@ $.fn.realperson = function(options) {
 $.realperson = new RealPerson(); // singleton instance
 
 $('.realperson-challenge').live('click', function() {
-	$(this).next().next().realperson('change');
+	$(this).next().realperson('change');
 });
 
 })(jQuery);
